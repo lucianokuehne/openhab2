@@ -1,0 +1,21 @@
+sitemap default label="AP 1902"
+
+{
+
+	Frame {
+	
+		Group item=grLiving
+		Group item=grSuite
+		Group item=grCorredor
+		Group item=grLolin
+//		Group item=grsonoff4ch
+		Group item=grWitty
+		Group item=grStatus
+		Switch item=grLights mappings=[OFF="All Off"]
+		Setpoint item=dimWittyWall2 minValue=0 maxValue=100 step=10
+
+   	}
+
+
+}
+

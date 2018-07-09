@@ -1,0 +1,227 @@
+
+Group grAll
+Group grLiving		"Living"		<sofa>				(grAll)
+Group grCorredor	"Corredor"		<corridor>			(grAll)
+Group grLolin		"LoLin"			<sofa>				(grAll)
+Group grWitty	    "Witty"		    <sofa>				(grAll)
+Group grsonoff4ch   "Sonoff 4CH"    <sofa>				(grAll)
+Group grSuite       "Suite"         <bedroom>			(grAll)
+           
+/* Active Groups */
+Group:Switch:OR(ON, OFF)	grLights	"All Lights [(%d)]"			(grAll)
+Group:String:OR(ON, OFF)	grStatus 	"Modulos online [(%d)]"		<wifi>		(grAll)
+
+/* MQTT Status */
+Number mqttActive "MQTT Messages Received [%d]" { mqtt="<[broker:$SYS/broker/messages/received:state:default]" }
+String mqttStatus "Mosquitto Broker [%s]" 	<server>	(grStatus)
+
+/* Lights */
+//-------------------------------------------------------------------
+Switch sonoff4ch1		"Entrada"	<light> (grLiving, grLights)
+{mqtt="
+>[broker:cmnd/sonoff4ch/power1:command:*:default],
+<[broker:stat/sonoff4ch/POWER1:state:default]"}
+
+Switch sonoff4ch2		"Hall"	<light> (grLiving, grLights)
+{mqtt="
+>[broker:cmnd/sonoff4ch/power2:command:*:default],
+<[broker:stat/sonoff4ch/POWER2:state:default]"}
+
+Switch sonoff4ch3		"Gourmet"	<light> (grLiving, grLights)
+{mqtt="
+>[broker:cmnd/sonoff4ch/power3:command:*:default],
+<[broker:stat/sonoff4ch/POWER3:state:default]"}
+
+Switch swLiving_1		"TV" <light> (grLiving, grLights)
+{mqtt="
+>[broker:/home/living/p1/com:command:on:0],
+>[broker:/home/living/p1/com:command:off:1],
+<[broker:/home/living/p1/state:state:default]"}
+
+Switch swLiving_2		"Sofa" <light> (grLiving, grLights)
+{mqtt="
+>[broker:/home/living/p2/com:command:on:0],
+>[broker:/home/living/p2/com:command:off:1],
+<[broker:/home/living/p2/state:state:default]"}
+
+Switch sonoff4ch4		"Lustre"	<light> (grLiving, grLights)
+{mqtt="
+>[broker:cmnd/sonoff4ch/power4:command:*:default],
+<[broker:stat/sonoff4ch/POWER4:state:default]"}
+//-------------------------------------------------------------------
+
+//-------------------------------------------------------------------
+Switch sofCorredor		"Corredor"	<light> (grCorredor, grLights)
+{mqtt="
+>[broker:cmnd/corredor/power:command:*:default],
+<[broker:stat/corredor/POWER:state:default]"}
+
+//Dimmer dimCorredor "dimmer [%d]" (grCorredor)
+//{mqtt=">[broker:cmnd/corredor/pwm:command:*:default],<[broker:stat/corredor/RESULT:state:JSONPATH($.PWM.PWM1)]"}
+
+Dimmer dimCorredor "dimmer [%d]" (grCorredor)
+{mqtt=">[broker:cmnd/corredor/dimmer:command:*:default],
+<[broker:stat/corredor/RESULT:state:JSONPATH($.Dimmer)]"}
+
+//Number dimCozinha2 "dimmer2 [%d]" (grCozinha)
+//{ mqtt="
+//<[broker:stat/cozinha/RESULT:state:JSONPATH($.PWM.PWM1).SCALE(dimmer.scale)]"}
+
+// AM2311 Temperature
+//Number tempCozinha "Temperatura Cozinha [%.1f °C]" <temperature> (grCozinha)
+//{ mqtt="
+//<[broker:tele/cozinha/SENSOR:state:JSONPATH($.AM2301.Temperature)]"}
+
+// AM2311 Humidity
+//Number humCozinha "Umidade Cozinha [%.1f %%]" <humidity> (grCozinha)
+//{ mqtt="
+//<[broker:tele/cozinha/SENSOR:state:JSONPATH($.AM2301.Humidity)]"}
+//-------------------------------------------------------------------
+
+//-------------------------------------------------------------------
+Switch swWitty1		"Witty1"		(grWitty, grLights)
+{mqtt="
+>[broker:/home/witty/p1/com:command:on:0],
+>[broker:/home/witty/p1/com:command:off:1],
+<>[broker:/home/witty/p1/state:state:default]"}
+
+Switch swWitty2		"Witty2"		(grWitty, grLights)
+{mqtt="
+>[broker:/home/witty/p2/com:command:on:0],
+>[broker:/home/witty/p2/com:command:off:1],
+<>[broker:/home/witty/p2/state:state:default]"}
+
+Switch swWitty3		"Witty3"		(grWitty, grLights)
+{mqtt="
+>[broker:/home/witty/p3/com:command:on:0],
+>[broker:/home/witty/p3/com:command:off:1],
+<[broker:/home/witty/p3/state:state:default]"}
+
+Switch swWitty4		"Witty4"		(grWitty, grLights)
+{mqtt="
+>[broker:/home/witty/p4/com:command:on:0],
+>[broker:/home/witty/p4/com:command:off:1],
+<[broker:/home/witty/p4/state:state:default]"}
+
+Dimmer dimWitty "dimmer [%d]" (grWitty)
+{mqtt=">[broker:cmnd/witty/dimmer:command:*:default],
+<[broker:stat/witty/RESULT:state:JSONPATH($.Dimmer)]"}
+
+/*
+Rollershutter dimWittyWall "dimmer [%d]" (grWitty)
+{mqtt="
+<[broker:stat/witty/RESULT:state:JSONPATH($.Dimmer)],
+<[broker:cmnd/sonoff2/POWER1:command:UP],
+<[broker:cmnd/sonoff2/POWER2:command:DOWN]"}
+*/
+
+Number dimWittyWall2 "dimmer [%d]" <slider> (grWitty)
+{mqtt="
+<[broker:stat/witty/RESULT:state:JSONPATH($.Dimmer)],
+<[broker:cmnd/sonoff2/POWER1:command:1],
+<[broker:cmnd/sonoff2/POWER2:command:0]"}
+//-------------------------------------------------------------------
+
+//-------------------------------------------------------------------
+Switch swLoLin1		"LoLin1"		(grLolin, grLights)
+{mqtt="
+>[broker:/home/lolin/p1/com:command:on:0],
+>[broker:/home/lolin/p1/com:command:off:1],
+<>[broker:/home/lolin/p1/state:state:default]"}
+
+Switch swLoLin2		"LoLin2"		(grLolin, grLights)
+{mqtt="
+>[broker:/home/lolin/p2/com:command:on:0],
+>[broker:/home/lolin/p2/com:command:off:1],
+<>[broker:/home/lolin/p2/state:state:default]"}
+
+Switch swLoLin3		"LoLin3"		(grLolin, grLights)
+{mqtt="
+>[broker:/home/lolin/p3/com:command:on:0],
+>[broker:/home/lolin/p3/com:command:off:1],
+<[broker:/home/lolin/p3/state:state:default]"}
+
+Switch swLoLin4		"LoLin4"		(grLolin, grLights)
+{mqtt="
+>[broker:/home/lolin/p4/com:command:on:0],
+>[broker:/home/lolin/p4/com:command:off:1],
+<[broker:/home/lolin/p4/state:state:default]"}
+//-------------------------------------------------------------------
+
+/* Rollershutter */
+//-------------------------------------------------------------------
+Switch persianach1		"abre"	<rollershutter> (grSuite)
+{mqtt="
+>[broker:cmnd/persiana/power1:command:*:default],
+<[broker:stat/persiana/POWER1:state:default]"}
+
+Switch persianach2		"fecha"	<rollershutter> (grSuite)
+{mqtt="
+>[broker:cmnd/persiana/power2:command:*:default],
+<[broker:stat/persiana/POWER2:state:default]"}
+
+Rollershutter persiana		    "persiana"	<rollershutter> (grSuite)
+{mqtt="
+>[broker:cmnd/persiana/power1:command:UP:TOGGLE],
+>[broker:cmnd/persiana/power2:command:DOWN:TOGGLE],
+>[broker:cmnd/persiana/power1:command:STOP:OFF],
+>[broker:cmnd/persiana/power2:command:STOP:OFF],
+<[broker:stat/persiana/POWER2:state:default]"}
+//-------------------------------------------------------------------
+
+/* Modules */
+//-------------------------------------------------------------------
+// LWT
+String modLiving		"Living [%s]" <wifi> (grLiving, grStatus)
+{mqtt="
+<[broker:/home/living/available:state:default]"}
+
+// LWT
+String modsonoff4ch		"sonoff4ch [%s]" <wifi> (grLiving, grStatus)
+{mqtt="
+<[broker:tele/sonoff4ch/LWT:state:MAP(state.map)]"}
+
+// Wifi Signal Strength in Percent
+Number wifisonoff4ch "sonoff4ch wifi [%d %%]" <qualityofservice> (grLiving, grStatus)
+{ mqtt="
+<[broker:tele/sonoff4ch/STATE:state:JSONPATH($.Wifi.RSSI)]"}
+
+// LWT
+String modpersiana		"Persiana [%s]" <wifi> (grSuite, grStatus)
+{mqtt="
+<[broker:tele/persiana/LWT:state:MAP(state.map)]"}
+
+// Wifi Signal Strength in Percent
+Number wifipersiana "Persiana wifi [%d %%]" <qualityofservice> (grSuite, grStatus)
+{ mqtt="
+<[broker:tele/persiana/STATE:state:JSONPATH($.Wifi.RSSI)]"}
+
+// LWT
+String modCorredor		"Corredor [%s]" <wifi> (grCorredor, grStatus)
+{mqtt="
+<[broker:tele/corredor/LWT:state:MAP(state.map)]"}
+
+// Wifi Signal Strength in Percent
+Number wifiCorredor "Corredor wifi [%d %%]" <qualityofservice> (grCorredor, grStatus)
+{ mqtt="
+<[broker:tele/corredor/STATE:state:JSONPATH($.Wifi.RSSI)]"}
+
+Number item_rssi "Item RSSI: [SCALE(rssi.scale):%d ]" <qualityofservice> (grCorredor, grStatus)
+{ mqtt="
+<[broker:tele/corredor/STATE:state:JSONPATH($.Wifi.RSSI)]"}
+
+// LWT
+String modWitty		"Witty [%s]" <wifi> (grWitty, grStatus)
+{mqtt="
+<[broker:tele/witty/LWT:state:MAP(state.map)]"}
+
+// Wifi Signal Strength in Percent
+Number wifimodWitty "Witty wifi [%d %%]" <qualityofservice> (grWitty, grStatus)
+{ mqtt="
+<[broker:tele/witty/STATE:state:JSONPATH($.Wifi.RSSI)]"}
+
+// LWT
+String modLoLin		"LoLin [%s]" <wifi> (grLolin, grStatus)
+{mqtt="
+<[broker:/home/lolin/available:state:default]"}
+//-------------------------------------------------------------------

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "Y:\\"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"svn.ignoreMissingSvnWarning": true
+	}
+}

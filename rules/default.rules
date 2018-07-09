@@ -1,0 +1,132 @@
+
+var Boolean sendMqttNotification = true
+
+/* Status*/
+//-----------------------------------------------------------------------------------------------
+rule "Initialize status"
+	when
+		System started
+	then {
+		logDebug("broker", "/home/openhab")
+		publish("broker", "/home/openhab", "ON")		
+	}
+end
+
+rule "Mosquitto Status"
+when
+	Time cron "0/30 * * * * ?"
+then
+	if(mqttActive.updatedSince(now().minusSeconds(60))) {
+		postUpdate(mqttStatus,"ON")
+		sendMqttNotification = true
+	}
+	if(!mqttActive.updatedSince(now().minusSeconds(60))) {
+		postUpdate(mqttStatus,"OFF")
+		if (sendMqttNotification) {
+			sendNotification("lucianokuehne@gmail.com", "MQTT OFF")
+			sendMqttNotification = false	
+			//logInfo("MQTT Status",mqttNotificationOff.toString)
+		}
+	}
+end
+
+rule "Dimmed Light"
+when
+    Item dimWittyWall received command
+then
+        if (receivedCommand == UP)
+			publish("broker", "cmnd/witty/dimmer", "+")		
+       
+		if (receivedCommand == DOWN)
+			publish("broker", "cmnd/witty/dimmer", "-")		
+
+//		postUpdate(dimWittyWall, dimWitty.state)
+
+/*     if ((receivedCommand == INCREASE) || (receivedCommand == DECREASE)) {
+        var Number percent = 0
+        if (DimmedLight.state instanceof DecimalType) percent = DimmedLight.state as DecimalType
+
+        if (receivedCommand == INCREASE) percent = percent + 5
+        if (receivedCommand == DECREASE) percent = percent - 5
+
+        if (percent < 0)   percent = 0
+        if (percent > 100) percent = 100
+        postUpdate(DimmedLight, percent);
+    }
+ */
+ end
+
+rule "Dimmed Light2"
+when
+    Item dimWittyWall2 received command
+then
+        if (receivedCommand == 1)
+			publish("broker", "cmnd/witty/dimmer", "+")		
+       
+		if (receivedCommand == 0)
+			publish("broker", "cmnd/witty/dimmer", "-")		
+
+//		postUpdate(dimWittyWall, dimWitty.state)
+
+/*     if ((receivedCommand == INCREASE) || (receivedCommand == DECREASE)) {
+        var Number percent = 0
+        if (DimmedLight.state instanceof DecimalType) percent = DimmedLight.state as DecimalType
+
+        if (receivedCommand == INCREASE) percent = percent + 5
+        if (receivedCommand == DECREASE) percent = percent - 5
+
+        if (percent < 0)   percent = 0
+        if (percent > 100) percent = 100
+        postUpdate(DimmedLight, percent);
+    }
+ */
+ end
+
+/* Modules ON */
+//-----------------------------------------------------------------------------------------------
+rule "Living ON"
+	when
+		Item modLiving changed from OFF to ON
+	then
+		sendNotification("lucianokuehne@gmail.com", "Living ON")
+end
+
+rule "LoLin ON"
+	when
+		Item modLoLin changed from OFF to ON
+	then
+		sendNotification("lucianokuehne@gmail.com", "LoLin ON")
+end
+
+rule "WeMosMini ON"
+	when
+		Item modWemosMini changed from OFF to ON
+	then
+		sendNotification("lucianokuehne@gmail.com", "WeMosMini ON")
+end
+//-----------------------------------------------------------------------------------------------
+
+/* Modules OFF */
+//-----------------------------------------------------------------------------------------------
+rule "LWT Living"
+	when
+		Item modLiving changed from ON to OFF
+	then
+		sendNotification("lucianokuehne@gmail.com", "Living OFF")
+end
+
+rule "LWT LoLin"
+	when
+		Item modLoLin changed from ON to OFF
+	then
+		sendNotification("lucianokuehne@gmail.com", "LoLin OFF")
+end
+
+rule "LWT WeMosMini"
+	when
+		Item modWemosMini changed from ON to OFF
+	then
+		sendNotification("lucianokuehne@gmail.com", "WeMosMini OFF")
+end
+//-----------------------------------------------------------------------------------------------
+

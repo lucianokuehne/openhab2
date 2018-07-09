@@ -1,0 +1,4 @@
+{
+    "openhab.host": "192.168.100.15",
+    "openhab.port": 8080
+}
